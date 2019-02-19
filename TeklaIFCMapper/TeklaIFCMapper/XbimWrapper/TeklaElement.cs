@@ -54,32 +54,28 @@ namespace TeklaIFCMapper.XbimWrapper
             this.Section = section;
             this.ModelInfo = modelInfo;
         }
-        public override string Create()
+        public override string Create(IfcStore model )
         {
-            using (var model = IfcStore.Open(ModelInfo.File))
+            using (var txn = model.BeginTransaction())
             {
-                using (var txn = model.BeginTransaction())
-                {
-                    var discreteAccessory = model.Instances.New<IfcDiscreteAccessory>(r => r.GlobalId = Guid.NewGuid().ToString());
-                    discreteAccessory.OwnerHistory = OwnerHistory;
-                    discreteAccessory.Name = Name;
-                    discreteAccessory.ObjectType = Section;
-                    discreteAccessory.ObjectPlacement = localPlacement;
-                    GlobalId = discreteAccessory.GlobalId.ToString();
-                    item = discreteAccessory;
-                    txn.Commit();
-                }
-                model.SaveAs(ModelInfo.File);
+                var discreteAccessory = model.Instances.New<IfcDiscreteAccessory>(r => r.GlobalId = Guid.NewGuid().ToString());
+                discreteAccessory.OwnerHistory = OwnerHistory;
+                discreteAccessory.Name = Name;
+                discreteAccessory.ObjectType = Section;
+                discreteAccessory.ObjectPlacement = localPlacement;
+                GlobalId = discreteAccessory.GlobalId.ToString();
+                item = discreteAccessory;
+                txn.Commit();
             }
+                model.SaveAs(ModelInfo.File);
+           
             return GlobalId;
         }
 
       
-        public IfcDiscreteAccessory GetById(string id)
+        public IfcDiscreteAccessory GetById(string id,IfcStore model)
         {
-            using (var model = IfcStore.Open(ModelInfo.File))
-            {
-
+           
                 if (id == null)
                 {
                     return null;
@@ -89,17 +85,16 @@ namespace TeklaIFCMapper.XbimWrapper
 
                     return model.Instances.FirstOrDefault<IfcDiscreteAccessory>(d => d.GlobalId == id);
                 }
-            }
+          
         }
 
 
-        public List<IfcDiscreteAccessory> GetAll()
+        public List<IfcDiscreteAccessory> GetAll(IfcStore model)
         {
-            using (var model = IfcStore.Open(ModelInfo.File))
-            {
+            
 
                 return model.Instances.OfType<IfcDiscreteAccessory>().ToList();
-            }
+           
         }
     }
 }

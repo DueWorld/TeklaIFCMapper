@@ -16,31 +16,31 @@ namespace TeklaIFCMapper.XbimWrapper
         public IfcSite ifcSite { get; set; }
         public IfcBuilding ifcBuilding { get; set; }
         public string File { get; set; }
+        public IfcBuildingStorey IfcStorey { get; set; }
         public ModelInfo(IfcProject ifcProject, IfcSite ifcSite, IfcBuilding ifcBuilding)
         {
             this.ifcProject = ifcProject;
             this.ifcSite = ifcSite;
             this.ifcBuilding = ifcBuilding;
         }
-        public ModelInfo(string projectname, string sitename, string buildingname, string filepath)
+        public ModelInfo(string projectname, string sitename, string buildingname, string filepath, IfcStore model)
         {
             this.File = filepath;
-            using (var model = IfcStore.Open(File))
+            using (var txn = model.BeginTransaction())
             {
-                using (var txn = model.BeginTransaction())
-                {
-                    ifcSite = model.Instances.New<IfcSite>(p => p.Name = sitename);
-                    ifcProject = model.Instances.New<IfcProject>(p => p.Name = projectname);
-                    ifcBuilding = model.Instances.New<IfcBuilding>(p => p.Name = buildingname);
-                    ifcProject.AddSite(ifcSite);
-                    ifcProject.AddBuilding(ifcBuilding);
-                    
-                    ifcProject.Initialize(ProjectUnits.SIUnitsUK);
-                    txn.Commit();
-                }
+                ifcSite = model.Instances.New<IfcSite>(p => p.Name = sitename);
+                ifcProject = model.Instances.New<IfcProject>(p => p.Name = projectname);
+                ifcBuilding = model.Instances.New<IfcBuilding>(p => p.Name = buildingname);
+                ifcProject.AddSite(ifcSite);
+                ifcProject.AddBuilding(ifcBuilding);
+
+                ifcProject.Initialize(ProjectUnits.SIUnitsUK);
+                txn.Commit();
+            }
+               
                 model.SaveAs(File);
             }
         }
 
     }
-}
+

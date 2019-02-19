@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xbim.Ifc;
 using Xbim.Ifc2x3.MeasureResource;
 using Xbim.Ifc2x3.UtilityResource;
 
@@ -16,7 +17,7 @@ namespace TeklaIFCMapper.XbimWrapper
         public abstract IfcLabel? Name { get; set; }
         public abstract IfcText? Description { get; set; }
         public abstract ModelInfo ModelInfo { get; set; }
-        public abstract string Create();
+        public abstract string Create(IfcStore model);
 
     }
 }

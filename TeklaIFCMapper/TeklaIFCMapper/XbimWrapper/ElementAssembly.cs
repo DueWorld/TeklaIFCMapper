@@ -29,10 +29,9 @@ namespace TeklaIFCMapper.XbimWrapper
             MyElements = new List<TeklaElement>();
         }
 
-        public override string Create()
+        public override string Create(IfcStore model)
         {
-            using (var model = IfcStore.Open(ModelInfo.File))
-            {
+           
                 using (var txn = model.BeginTransaction())
                 {
                     //////////////
@@ -45,6 +44,14 @@ namespace TeklaIFCMapper.XbimWrapper
                     rel.OwnerHistory = OwnerHistory;
 
                     rel.RelatingObject = ElementAssembly;
+
+                    foreach (TeklaElement item in MyElements)
+                    {
+
+                    IfcObjectDefinition ifcObject = item.item;
+
+                    rel.RelatedObjects.Add(ifcObject);
+                    }
 
                     GlobalId = ElementAssembly.GlobalId.ToString();
                     element = ElementAssembly;
@@ -67,7 +74,7 @@ namespace TeklaIFCMapper.XbimWrapper
                     txn.Commit();
                 }
                 model.SaveAs(ModelInfo.File);
-            }
+            
             return GlobalId;
         }
     }
