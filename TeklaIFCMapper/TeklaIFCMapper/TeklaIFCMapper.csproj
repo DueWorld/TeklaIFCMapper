@@ -103,6 +103,7 @@
     <Compile Include="XbimWrapper\IfcObject.cs" />
     <Compile Include="XbimWrapper\IIfcObject.cs" />
     <Compile Include="XbimWrapper\ModelInfo.cs" />
+    <Compile Include="XbimWrapper\RevitToTeklaIfc.cs" />
     <Compile Include="XbimWrapper\TeklaElement.cs" />
   </ItemGroup>
   <ItemGroup>
