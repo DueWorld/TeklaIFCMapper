@@ -32,6 +32,9 @@ namespace TeklaIFCMapper.XbimWrapper
                     ifcSite = model.Instances.New<IfcSite>(p => p.Name = sitename);
                     ifcProject = model.Instances.New<IfcProject>(p => p.Name = projectname);
                     ifcBuilding = model.Instances.New<IfcBuilding>(p => p.Name = buildingname);
+                    ifcProject.AddSite(ifcSite);
+                    ifcProject.AddBuilding(ifcBuilding);
+                    
                     ifcProject.Initialize(ProjectUnits.SIUnitsUK);
                     txn.Commit();
                 }

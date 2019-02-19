@@ -35,26 +35,35 @@ namespace TeklaIFCMapper.XbimWrapper
             {
                 using (var txn = model.BeginTransaction())
                 {
+                    //////////////
                     var ElementAssembly = model.Instances.New<IfcElementAssembly>(r => r.GlobalId = Guid.NewGuid().ToString());
                     ElementAssembly.OwnerHistory = OwnerHistory;
                     ElementAssembly.Name = Name;
                     ElementAssembly.ObjectPlacement = localPlacement;
                     var rel = model.Instances.New<IfcRelAggregates>(r => r.GlobalId = Guid.NewGuid().ToString());
-                    //var rel = model.Instances.New<IfcRelConnectsElements>(r => r.GlobalId = Guid.NewGuid().ToString());
-
 
                     rel.OwnerHistory = OwnerHistory;
+
                     rel.RelatingObject = ElementAssembly;
-
-                    //foreach (TeklaElement item in MyElements)
-                    //{
-                    //    rel.RelatedObjects.Add(item.item);
-                    //}
-
-
 
                     GlobalId = ElementAssembly.GlobalId.ToString();
                     element = ElementAssembly;
+
+                    ////////////////////////////
+                    //var ElementAssembly = model.Instances.New<IfcElementAssembly>(r => r.GlobalId = Guid.NewGuid().ToString());
+                    //ElementAssembly.OwnerHistory = OwnerHistory;
+                    //ElementAssembly.Name = Name;
+                    //ElementAssembly.ObjectPlacement = localPlacement;
+                    //IfcRelDecomposes ifcRelDecomposes = model.Instances.New<IfcRelAggregates>(r => r.GlobalId = Guid.NewGuid().ToString());
+                    //ifcRelDecomposes.RelatingObject = ElementAssembly;
+
+                    //foreach (TeklaElement item in MyElements)
+                    //{
+                    //    IfcObjectDefinition ifcObject =item.item;
+
+                    //ifcRelDecomposes.RelatedObjects.Add(ifcObject);
+                    //}
+
                     txn.Commit();
                 }
                 model.SaveAs(ModelInfo.File);
